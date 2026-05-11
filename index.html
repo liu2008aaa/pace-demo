@@ -647,12 +647,42 @@
     display: grid;
     grid-template-columns: repeat(7, 1fr);
     gap: 4px;
+    position: relative;
+    overflow: hidden;
+    isolation: isolate;
+  }
+  /* 整体渐进闪光波 — accent 光带从顶往底缓慢扫过, 5s 一周期, 暗→明→暗 */
+  .dotmap::after {
+    content: '';
+    position: absolute;
+    left: -10%;
+    right: -10%;
+    height: 50%;
+    pointer-events: none;
+    background: radial-gradient(
+      ellipse at center,
+      rgba(0, 229, 168, 0.22) 0%,
+      rgba(0, 229, 168, 0.10) 35%,
+      rgba(0, 229, 168, 0) 70%
+    );
+    mix-blend-mode: screen;
+    z-index: 10;
+    animation: dotmap-wave 5s ease-in-out infinite;
+  }
+  @keyframes dotmap-wave {
+    0%   { top: -60%; opacity: 0;   }
+    20%  { opacity: 1;              }
+    50%  { top: 30%;  opacity: 1;   }
+    80%  { opacity: 1;              }
+    100% { top: 110%; opacity: 0;   }
   }
   .dotmap-cell {
     aspect-ratio: 1;
     border-radius: 50%;
     background: rgba(0, 229, 168, var(--a, 0));
     box-shadow: 0 0 0 0.5px rgba(255,255,255,0.04) inset;
+    position: relative;
+    z-index: 1;
   }
   .dotmap-cell.empty {
     background: rgba(255,255,255,0.025);
@@ -1600,6 +1630,413 @@
     padding: 24px 32px 48px;
     max-width: 1900px;
     margin: 0 auto;
+  }
+
+  /* ============== CONCEPT STAGE (Section E) ============== */
+  .concept-stage {
+    max-width: 720px;
+    margin: 32px auto 80px;
+    padding: 0 32px;
+  }
+
+  .concept-title {
+    text-align: center;
+    margin-bottom: 32px;
+  }
+  .concept-title h3 {
+    font-family: 'Noto Sans SC', sans-serif;
+    font-size: 22px;
+    font-weight: 600;
+    color: var(--text-1);
+    letter-spacing: 0.04em;
+    margin: 0 0 10px;
+  }
+  .concept-title p {
+    font-family: 'Noto Sans SC', sans-serif;
+    font-size: 12px;
+    color: var(--text-3);
+    line-height: 1.6;
+    letter-spacing: 0.06em;
+    margin: 0;
+  }
+
+  /* Big trail card */
+  .trail-card {
+    background: var(--bg-card);
+    border: 0.5px solid var(--hairline-bright);
+    border-radius: 16px;
+    padding: 16px 18px 14px;
+    box-shadow:
+      0 30px 64px rgba(0, 0, 0, 0.5),
+      0 0 32px rgba(0, 229, 168, 0.08);
+    position: relative;
+    overflow: hidden;
+  }
+  .trail-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse at 80% 0%, rgba(0, 229, 168, 0.06), transparent 60%);
+    pointer-events: none;
+  }
+
+  .trail-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 12px;
+    position: relative;
+    z-index: 2;
+  }
+  .trail-card-header .cn {
+    font-family: 'Noto Sans SC', sans-serif;
+    font-size: 11px;
+    color: var(--text-3);
+    letter-spacing: 0.26em;
+  }
+  .trail-card-header .mono {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    color: var(--text-4);
+    letter-spacing: 0.22em;
+  }
+
+  .trail-svg-frame {
+    height: 200px;
+    border-radius: 10px;
+    overflow: hidden;
+    background: linear-gradient(135deg, #04060a 0%, #02040a 100%);
+    border: 0.5px solid var(--hairline);
+    position: relative;
+    z-index: 2;
+  }
+
+  .trail-card-footer {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    margin-top: 14px;
+    position: relative;
+    z-index: 2;
+    flex-wrap: wrap;
+  }
+  .trail-stat {
+    display: flex;
+    align-items: baseline;
+    gap: 4px;
+  }
+  .trail-stat-num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--text-1);
+    letter-spacing: -0.02em;
+  }
+  .trail-stat-unit {
+    font-size: 10px;
+    color: var(--text-3);
+    letter-spacing: 0.04em;
+  }
+  .trail-stat-unit.cn {
+    font-family: 'Noto Sans SC', sans-serif;
+    letter-spacing: 0.14em;
+  }
+  .trail-stat-prefix {
+    font-family: 'Noto Sans SC', sans-serif;
+    font-size: 10px;
+    color: var(--text-3);
+    letter-spacing: 0.14em;
+    margin-right: 2px;
+  }
+  .trail-dot {
+    color: var(--text-4);
+    font-size: 11px;
+  }
+  .trail-streak {
+    display: flex;
+    align-items: baseline;
+    gap: 4px;
+    padding: 3px 10px;
+    background: rgba(0, 229, 168, 0.06);
+    border: 0.5px solid rgba(0, 229, 168, 0.2);
+    border-radius: 999px;
+  }
+
+  /* Annotation notes */
+  .concept-notes {
+    margin-top: 32px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px 24px;
+  }
+  .note {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+  }
+  .note-num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--accent);
+    letter-spacing: 0.1em;
+    background: rgba(0, 229, 168, 0.08);
+    border: 0.5px solid rgba(0, 229, 168, 0.25);
+    border-radius: 4px;
+    padding: 2px 8px;
+    flex-shrink: 0;
+    align-self: flex-start;
+    margin-top: 2px;
+  }
+  .note-body {
+    flex: 1;
+  }
+  .note-h {
+    font-family: 'Noto Sans SC', sans-serif;
+    font-size: 12px;
+    color: var(--text-1);
+    font-weight: 500;
+    letter-spacing: 0.04em;
+    margin-bottom: 4px;
+  }
+  .note-d {
+    font-family: 'Noto Sans SC', sans-serif;
+    font-size: 10.5px;
+    color: var(--text-2);
+    line-height: 1.55;
+    letter-spacing: 0.04em;
+  }
+
+  /* ============== WEEKLY RHYTHM (Section E v2) ============== */
+  .rhythm-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+    margin-bottom: 36px;
+  }
+  .rhythm-card-wrap {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .variant-tag {
+    font-family: 'Noto Sans SC', sans-serif;
+    font-size: 11px;
+    color: var(--accent);
+    letter-spacing: 0.18em;
+    padding: 4px 10px;
+    background: rgba(0, 229, 168, 0.06);
+    border: 0.5px solid rgba(0, 229, 168, 0.25);
+    border-radius: 999px;
+    align-self: flex-start;
+  }
+  .variant-tag.warn {
+    color: var(--gold);
+    background: rgba(229, 192, 123, 0.06);
+    border-color: rgba(229, 192, 123, 0.25);
+  }
+  .variant-tag.muted {
+    color: var(--text-3);
+    background: rgba(255, 255, 255, 0.03);
+    border-color: var(--hairline);
+  }
+
+  .rhythm-card {
+    background: var(--bg-card);
+    border: 0.5px solid var(--hairline);
+    border-radius: 14px;
+    padding: 13px 15px 13px;
+    position: relative;
+  }
+  .rhythm-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 10px;
+  }
+  .rhythm-header .cn {
+    font-family: 'Noto Sans SC', sans-serif;
+    font-size: 10px;
+    color: var(--text-3);
+    letter-spacing: 0.24em;
+  }
+  .rhythm-header .mono {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 8px;
+    color: var(--text-4);
+    letter-spacing: 0.22em;
+  }
+  .rhythm-bars {
+    width: 100%;
+    height: 102px;
+  }
+  .rhythm-bars svg {
+    width: 100%;
+    height: 100%;
+  }
+  .rhythm-divider {
+    height: 0.5px;
+    background: var(--hairline);
+    margin: 8px 0 8px;
+  }
+  .rhythm-stats {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 8px;
+  }
+  .rhythm-stat-main {
+    display: flex;
+    align-items: baseline;
+    gap: 4px;
+  }
+  .rhythm-num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 22px;
+    font-weight: 600;
+    color: var(--text-1);
+    letter-spacing: -0.02em;
+    line-height: 1;
+  }
+  .rhythm-num-sm {
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 600;
+    color: var(--text-1);
+    letter-spacing: -0.01em;
+  }
+  .rhythm-unit {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--text-3);
+    letter-spacing: 0.04em;
+  }
+  .rhythm-prefix {
+    font-family: 'Noto Sans SC', sans-serif;
+    font-size: 10px;
+    color: var(--text-3);
+    letter-spacing: 0.18em;
+    margin-right: 2px;
+  }
+  .rhythm-delta {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    padding: 3px 9px;
+    border-radius: 4px;
+  }
+  .rhythm-delta.good {
+    color: var(--accent);
+    background: rgba(0, 229, 168, 0.08);
+    border: 0.5px solid rgba(0, 229, 168, 0.25);
+  }
+  .rhythm-delta.down {
+    color: var(--warn);
+    background: rgba(255, 107, 61, 0.08);
+    border: 0.5px solid rgba(255, 107, 61, 0.25);
+  }
+  .rhythm-delta.neutral {
+    color: var(--text-4);
+    background: transparent;
+  }
+  .rhythm-stats-sub {
+    margin-top: 4px;
+    font-size: 11px;
+    color: var(--text-2);
+    font-family: 'Noto Sans SC', sans-serif;
+    letter-spacing: 0.04em;
+  }
+  .rhythm-streak {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    margin-top: 11px;
+    font-family: 'Noto Sans SC', sans-serif;
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    padding: 3px 10px;
+    border-radius: 999px;
+  }
+  .rhythm-streak.good {
+    color: var(--accent);
+    background: rgba(0, 229, 168, 0.06);
+    border: 0.5px solid rgba(0, 229, 168, 0.22);
+  }
+  .rhythm-streak.warn {
+    color: var(--gold);
+    background: rgba(229, 192, 123, 0.06);
+    border: 0.5px solid rgba(229, 192, 123, 0.25);
+  }
+  .rhythm-streak.muted {
+    color: var(--text-2);
+    background: rgba(255, 255, 255, 0.03);
+    border: 0.5px solid var(--hairline);
+  }
+  .rhythm-streak-sep {
+    color: var(--text-4);
+    margin: 0 3px;
+  }
+
+  /* Phone 01 integration */
+  .phone-integration-title {
+    text-align: center;
+    margin-top: 16px;
+    margin-bottom: 24px;
+  }
+  .phone-integration-title h4 {
+    font-family: 'Noto Sans SC', sans-serif;
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--text-1);
+    letter-spacing: 0.06em;
+    margin: 0 0 6px;
+  }
+  .phone-integration-title p {
+    font-family: 'Noto Sans SC', sans-serif;
+    font-size: 11px;
+    color: var(--text-3);
+    letter-spacing: 0.06em;
+    margin: 0;
+  }
+  .phone-integration-frame {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 36px;
+  }
+  .integration-iphone {
+    /* reuse existing .iphone styles, just wider */
+  }
+  .mini-rhythm {
+    padding: 10px 12px 10px;
+    border-radius: 12px;
+  }
+  .mini-rhythm .rhythm-header {
+    margin-bottom: 6px;
+  }
+  .mini-rhythm .rhythm-header .cn {
+    font-size: 8.5px;
+    letter-spacing: 0.22em;
+  }
+  .mini-rhythm .rhythm-header .mono {
+    font-size: 7px;
+    letter-spacing: 0.2em;
+  }
+
+  /* Notes for v2 */
+  .rhythm-notes {
+    margin-top: 8px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px 24px;
+  }
+  .note-num.warn {
+    color: var(--gold);
+    background: rgba(229, 192, 123, 0.08);
+    border-color: rgba(229, 192, 123, 0.3);
+  }
+  .note-num.muted {
+    color: var(--text-3);
+    background: rgba(255, 255, 255, 0.03);
+    border-color: var(--hairline);
   }
 
   /* ============== VERSION TAG ============== */
@@ -4158,10 +4595,605 @@
 </main>
 
 
+<!-- =================== SECTION E: CONCEPT PREVIEW (v2) =================== -->
+<div class="section-header">
+  <div class="rule"></div>
+  <span class="letter">E</span>
+  <div class="center-stack">
+    <span class="name-cn cn">本周节奏</span>
+    <span class="small-tick"></span>
+    <span class="name-en">Weekly Rhythm · v0.2 Proposal</span>
+  </div>
+  <div class="rule rule-r"></div>
+</div>
+
+<div class="concept-stage">
+  <div class="concept-title">
+    <h3>提案 v2：「本周节奏」</h3>
+    <p>放弃地理空间的可视化，转用时间维度的节奏感<br/>即使天天同路线也有视觉变化（距离/配速本身就在变）</p>
+  </div>
+
+  <!-- 4 state variants in 2x2 grid -->
+  <div class="rhythm-grid">
+
+    <!-- ============ Variant A: 正常本周 ============ -->
+    <div class="rhythm-card-wrap">
+      <div class="variant-tag">A · 正常本周</div>
+      <div class="rhythm-card">
+        <div class="rhythm-header">
+          <span class="cn">本周节奏</span>
+          <span class="mono">RHYTHM</span>
+        </div>
+        <div class="rhythm-bars">
+          <svg viewBox="0 0 280 102" preserveAspectRatio="xMidYMid meet">
+            <line x1="0" y1="86" x2="280" y2="86" stroke="rgba(255,255,255,0.06)" stroke-width="0.5"/>
+            <rect x="6"   y="36" width="28" height="50" rx="2" fill="rgba(0,229,168,0.55)"/>
+            <rect x="46"  y="24" width="28" height="62" rx="2" fill="rgba(0,229,168,0.65)"/>
+            <rect x="86"  y="78" width="28" height="8"  rx="2" fill="rgba(255,255,255,0.08)"/>
+            <rect x="126" y="46" width="28" height="40" rx="2" fill="rgba(0,229,168,0.5)"/>
+            <rect x="166" y="36" width="28" height="50" rx="2" fill="rgba(0,229,168,0.55)"/>
+            <rect x="206" y="78" width="28" height="8"  rx="2" fill="rgba(255,255,255,0.08)"/>
+            <rect x="246" y="26" width="28" height="60" rx="2" fill="#29F0BD" filter="drop-shadow(0 0 4px rgba(41,240,189,0.6))"/>
+            <circle cx="260" cy="22" r="3" fill="#29F0BD" style="filter: drop-shadow(0 0 6px rgba(41,240,189,0.9));">
+              <animate attributeName="r" values="3;4.2;3" dur="2.4s" repeatCount="indefinite"/>
+            </circle>
+            <text x="20"  y="98" font-family="Noto Sans SC" font-size="9" fill="#5A5E68" text-anchor="middle">一</text>
+            <text x="60"  y="98" font-family="Noto Sans SC" font-size="9" fill="#5A5E68" text-anchor="middle">二</text>
+            <text x="100" y="98" font-family="Noto Sans SC" font-size="9" fill="#3A3D44" text-anchor="middle">三</text>
+            <text x="140" y="98" font-family="Noto Sans SC" font-size="9" fill="#5A5E68" text-anchor="middle">四</text>
+            <text x="180" y="98" font-family="Noto Sans SC" font-size="9" fill="#5A5E68" text-anchor="middle">五</text>
+            <text x="220" y="98" font-family="Noto Sans SC" font-size="9" fill="#3A3D44" text-anchor="middle">六</text>
+            <text x="260" y="98" font-family="Noto Sans SC" font-size="9" fill="#29F0BD" text-anchor="middle" font-weight="600">日</text>
+          </svg>
+        </div>
+        <div class="rhythm-divider"></div>
+        <div class="rhythm-stats">
+          <div class="rhythm-stat-main">
+            <span class="cn rhythm-prefix">本周</span>
+            <span class="rhythm-num">26.0</span>
+            <span class="rhythm-unit">km</span>
+          </div>
+          <div class="rhythm-delta good">↑12%</div>
+        </div>
+        <div class="rhythm-stats-sub">
+          <span class="rhythm-num-sm">5</span>
+          <span class="cn"> 跑 · </span>
+          <span class="cn">均</span>
+          <span class="rhythm-num-sm"> 5'18"</span>
+          <span class="cn">/km</span>
+        </div>
+        <div class="rhythm-streak good">
+          <span>↗ 连续</span>
+          <span class="rhythm-num-sm">12</span>
+          <span class="cn">天</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============ Variant B: 同路线天天圆 ============ -->
+    <div class="rhythm-card-wrap">
+      <div class="variant-tag">B · 天天画圆</div>
+      <div class="rhythm-card">
+        <div class="rhythm-header">
+          <span class="cn">本周节奏</span>
+          <span class="mono">RHYTHM</span>
+        </div>
+        <div class="rhythm-bars">
+          <svg viewBox="0 0 280 102" preserveAspectRatio="xMidYMid meet">
+            <line x1="0" y1="86" x2="280" y2="86" stroke="rgba(255,255,255,0.06)" stroke-width="0.5"/>
+            <rect x="6"   y="34" width="28" height="52" rx="2" fill="rgba(0,229,168,0.55)"/>
+            <rect x="46"  y="31" width="28" height="55" rx="2" fill="rgba(0,229,168,0.55)"/>
+            <rect x="86"  y="36" width="28" height="50" rx="2" fill="rgba(0,229,168,0.55)"/>
+            <rect x="126" y="33" width="28" height="53" rx="2" fill="rgba(0,229,168,0.55)"/>
+            <rect x="166" y="35" width="28" height="51" rx="2" fill="rgba(0,229,168,0.55)"/>
+            <rect x="206" y="78" width="28" height="8"  rx="2" fill="rgba(255,255,255,0.08)"/>
+            <rect x="246" y="32" width="28" height="54" rx="2" fill="#29F0BD" filter="drop-shadow(0 0 4px rgba(41,240,189,0.6))"/>
+            <circle cx="260" cy="28" r="3" fill="#29F0BD" style="filter: drop-shadow(0 0 6px rgba(41,240,189,0.9));">
+              <animate attributeName="r" values="3;4.2;3" dur="2.4s" repeatCount="indefinite"/>
+            </circle>
+            <text x="20"  y="98" font-family="Noto Sans SC" font-size="9" fill="#5A5E68" text-anchor="middle">一</text>
+            <text x="60"  y="98" font-family="Noto Sans SC" font-size="9" fill="#5A5E68" text-anchor="middle">二</text>
+            <text x="100" y="98" font-family="Noto Sans SC" font-size="9" fill="#5A5E68" text-anchor="middle">三</text>
+            <text x="140" y="98" font-family="Noto Sans SC" font-size="9" fill="#5A5E68" text-anchor="middle">四</text>
+            <text x="180" y="98" font-family="Noto Sans SC" font-size="9" fill="#5A5E68" text-anchor="middle">五</text>
+            <text x="220" y="98" font-family="Noto Sans SC" font-size="9" fill="#3A3D44" text-anchor="middle">六</text>
+            <text x="260" y="98" font-family="Noto Sans SC" font-size="9" fill="#29F0BD" text-anchor="middle" font-weight="600">日</text>
+          </svg>
+        </div>
+        <div class="rhythm-divider"></div>
+        <div class="rhythm-stats">
+          <div class="rhythm-stat-main">
+            <span class="cn rhythm-prefix">本周</span>
+            <span class="rhythm-num">31.5</span>
+            <span class="rhythm-unit">km</span>
+          </div>
+          <div class="rhythm-delta good">↑3%</div>
+        </div>
+        <div class="rhythm-stats-sub">
+          <span class="rhythm-num-sm">6</span>
+          <span class="cn"> 跑 · </span>
+          <span class="cn">均</span>
+          <span class="rhythm-num-sm"> 5'24"</span>
+          <span class="cn">/km</span>
+        </div>
+        <div class="rhythm-streak good">
+          <span>↗ 连续</span>
+          <span class="rhythm-num-sm">19</span>
+          <span class="cn">天</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============ Variant C: streak 刚断 ============ -->
+    <div class="rhythm-card-wrap">
+      <div class="variant-tag warn">C · 中间断了</div>
+      <div class="rhythm-card">
+        <div class="rhythm-header">
+          <span class="cn">本周节奏</span>
+          <span class="mono">RHYTHM</span>
+        </div>
+        <div class="rhythm-bars">
+          <svg viewBox="0 0 280 102" preserveAspectRatio="xMidYMid meet">
+            <line x1="0" y1="86" x2="280" y2="86" stroke="rgba(255,255,255,0.06)" stroke-width="0.5"/>
+            <rect x="6"   y="36" width="28" height="50" rx="2" fill="rgba(0,229,168,0.55)"/>
+            <rect x="46"  y="26" width="28" height="60" rx="2" fill="rgba(0,229,168,0.6)"/>
+            <rect x="86"  y="78" width="28" height="8"  rx="2" fill="rgba(229,192,123,0.35)"/>
+            <rect x="126" y="78" width="28" height="8"  rx="2" fill="rgba(229,192,123,0.35)"/>
+            <rect x="166" y="36" width="28" height="50" rx="2" fill="rgba(0,229,168,0.55)"/>
+            <rect x="206" y="26" width="28" height="60" rx="2" fill="rgba(0,229,168,0.6)"/>
+            <rect x="246" y="26" width="28" height="60" rx="2" fill="#29F0BD" filter="drop-shadow(0 0 4px rgba(41,240,189,0.6))"/>
+            <circle cx="260" cy="22" r="3" fill="#29F0BD" style="filter: drop-shadow(0 0 6px rgba(41,240,189,0.9));">
+              <animate attributeName="r" values="3;4.2;3" dur="2.4s" repeatCount="indefinite"/>
+            </circle>
+            <text x="20"  y="98" font-family="Noto Sans SC" font-size="9" fill="#5A5E68" text-anchor="middle">一</text>
+            <text x="60"  y="98" font-family="Noto Sans SC" font-size="9" fill="#5A5E68" text-anchor="middle">二</text>
+            <text x="100" y="98" font-family="Noto Sans SC" font-size="9" fill="#E5C07B" text-anchor="middle">三</text>
+            <text x="140" y="98" font-family="Noto Sans SC" font-size="9" fill="#E5C07B" text-anchor="middle">四</text>
+            <text x="180" y="98" font-family="Noto Sans SC" font-size="9" fill="#5A5E68" text-anchor="middle">五</text>
+            <text x="220" y="98" font-family="Noto Sans SC" font-size="9" fill="#5A5E68" text-anchor="middle">六</text>
+            <text x="260" y="98" font-family="Noto Sans SC" font-size="9" fill="#29F0BD" text-anchor="middle" font-weight="600">日</text>
+          </svg>
+        </div>
+        <div class="rhythm-divider"></div>
+        <div class="rhythm-stats">
+          <div class="rhythm-stat-main">
+            <span class="cn rhythm-prefix">本周</span>
+            <span class="rhythm-num">26.0</span>
+            <span class="rhythm-unit">km</span>
+          </div>
+          <div class="rhythm-delta neutral">·</div>
+        </div>
+        <div class="rhythm-stats-sub">
+          <span class="rhythm-num-sm">5</span>
+          <span class="cn"> 跑 · </span>
+          <span class="cn">均</span>
+          <span class="rhythm-num-sm"> 5'22"</span>
+          <span class="cn">/km</span>
+        </div>
+        <div class="rhythm-streak warn">
+          <span class="cn">最长</span>
+          <span class="rhythm-num-sm">12</span>
+          <span class="cn">天</span>
+          <span class="rhythm-streak-sep">·</span>
+          <span class="cn">本周</span>
+          <span class="rhythm-num-sm">5</span>
+          <span class="cn">跑</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============ Variant D: 完全断 (>1周) ============ -->
+    <div class="rhythm-card-wrap">
+      <div class="variant-tag muted">D · 长期不连续</div>
+      <div class="rhythm-card">
+        <div class="rhythm-header">
+          <span class="cn">本周节奏</span>
+          <span class="mono">RHYTHM</span>
+        </div>
+        <div class="rhythm-bars">
+          <svg viewBox="0 0 280 102" preserveAspectRatio="xMidYMid meet">
+            <line x1="0" y1="86" x2="280" y2="86" stroke="rgba(255,255,255,0.06)" stroke-width="0.5"/>
+            <rect x="6"   y="78" width="28" height="8"  rx="2" fill="rgba(255,255,255,0.08)"/>
+            <rect x="46"  y="78" width="28" height="8"  rx="2" fill="rgba(255,255,255,0.08)"/>
+            <rect x="86"  y="46" width="28" height="40" rx="2" fill="rgba(0,229,168,0.4)"/>
+            <rect x="126" y="78" width="28" height="8"  rx="2" fill="rgba(255,255,255,0.08)"/>
+            <rect x="166" y="36" width="28" height="50" rx="2" fill="rgba(0,229,168,0.45)"/>
+            <rect x="206" y="78" width="28" height="8"  rx="2" fill="rgba(255,255,255,0.08)"/>
+            <rect x="246" y="26" width="28" height="60" rx="2" fill="#29F0BD" filter="drop-shadow(0 0 4px rgba(41,240,189,0.6))"/>
+            <circle cx="260" cy="22" r="3" fill="#29F0BD" style="filter: drop-shadow(0 0 6px rgba(41,240,189,0.9));">
+              <animate attributeName="r" values="3;4.2;3" dur="2.4s" repeatCount="indefinite"/>
+            </circle>
+            <text x="20"  y="98" font-family="Noto Sans SC" font-size="9" fill="#3A3D44" text-anchor="middle">一</text>
+            <text x="60"  y="98" font-family="Noto Sans SC" font-size="9" fill="#3A3D44" text-anchor="middle">二</text>
+            <text x="100" y="98" font-family="Noto Sans SC" font-size="9" fill="#5A5E68" text-anchor="middle">三</text>
+            <text x="140" y="98" font-family="Noto Sans SC" font-size="9" fill="#3A3D44" text-anchor="middle">四</text>
+            <text x="180" y="98" font-family="Noto Sans SC" font-size="9" fill="#5A5E68" text-anchor="middle">五</text>
+            <text x="220" y="98" font-family="Noto Sans SC" font-size="9" fill="#3A3D44" text-anchor="middle">六</text>
+            <text x="260" y="98" font-family="Noto Sans SC" font-size="9" fill="#29F0BD" text-anchor="middle" font-weight="600">日</text>
+          </svg>
+        </div>
+        <div class="rhythm-divider"></div>
+        <div class="rhythm-stats">
+          <div class="rhythm-stat-main">
+            <span class="cn rhythm-prefix">本周</span>
+            <span class="rhythm-num">15.0</span>
+            <span class="rhythm-unit">km</span>
+          </div>
+          <div class="rhythm-delta down">↓42%</div>
+        </div>
+        <div class="rhythm-stats-sub">
+          <span class="rhythm-num-sm">3</span>
+          <span class="cn"> 跑 · </span>
+          <span class="cn">均</span>
+          <span class="rhythm-num-sm"> 5'48"</span>
+          <span class="cn">/km</span>
+        </div>
+        <div class="rhythm-streak muted">
+          <span class="cn">本月</span>
+          <span class="rhythm-num-sm">18</span>
+          <span class="cn">跑</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ============ Phone 01 integration mock ============ -->
+  <div class="phone-integration-title">
+    <h4>整合到首页 · Phone 01</h4>
+    <p>替换 v0.1.12 的 WeeklyProgressCard，节奏卡夹在 AI 建议和出发按钮之间</p>
+  </div>
+
+  <div class="phone-integration-frame">
+    <div class="iphone integration-iphone">
+      <div class="btn-side btn-mute"></div>
+      <div class="btn-side btn-vol-up"></div>
+      <div class="btn-side btn-vol-dn"></div>
+      <div class="btn-side btn-power"></div>
+      <div class="screen">
+        <div class="dynamic-island"></div>
+
+        <div class="status-bar">
+          <span>9:41</span>
+          <div class="status-icons">
+            <svg width="16" height="11" viewBox="0 0 16 11"><rect x="0" y="7" width="3" height="4" rx="0.5" fill="white"/><rect x="4" y="5" width="3" height="6" rx="0.5" fill="white"/><rect x="8" y="3" width="3" height="8" rx="0.5" fill="white"/><rect x="12" y="0" width="3" height="11" rx="0.5" fill="white"/></svg>
+            <svg width="14" height="10" viewBox="0 0 14 10"><path d="M7 9.5 L8.4 8 L7 6.5 L5.6 8 Z" fill="white"/><path d="M7 7 C5.5 7 4.4 7.7 3.7 8.5 L4.6 9.4 C5.2 8.8 6 8.4 7 8.4 C8 8.4 8.8 8.8 9.4 9.4 L10.3 8.5 C9.6 7.7 8.5 7 7 7 Z" fill="white"/><path d="M7 4 C4.5 4 2.5 5 1 6.5 L1.9 7.4 C3.2 6.1 4.9 5.4 7 5.4 C9.1 5.4 10.8 6.1 12.1 7.4 L13 6.5 C11.5 5 9.5 4 7 4 Z" fill="white" fill-opacity="0.95"/></svg>
+            <svg width="24" height="10" viewBox="0 0 24 10"><rect x="0.5" y="0.5" width="19" height="9" rx="2" fill="none" stroke="white" stroke-opacity="0.5"/><rect x="2" y="2" width="15" height="6" rx="1" fill="white"/><rect x="20" y="3.5" width="1.5" height="3" rx="0.5" fill="white" fill-opacity="0.55"/></svg>
+          </div>
+        </div>
+
+        <div class="screen-body">
+          <!-- Brand strip -->
+          <div class="brand-strip">
+            <div>PACE<span class="dot">.</span></div>
+            <div class="coach-chip">
+              <span class="star">✦</span>
+              <span class="cn-text cn">教练</span>
+            </div>
+          </div>
+
+          <!-- Greeting -->
+          <div class="relative z-10 mt-3">
+            <div class="cn" style="font-size: 17px; color: white; font-weight: 500; letter-spacing: 0.04em;">上午好，刘宇</div>
+            <div class="mt-1.5 flex items-center gap-1.5" style="font-size: 9px;">
+              <span class="cn" style="color: var(--text-2); letter-spacing: 0.16em;">上海 · 晴 · 18°C · 微风 · </span>
+              <span class="cn" style="color: var(--accent); letter-spacing: 0.14em;">适合跑步</span>
+            </div>
+          </div>
+
+          <!-- Hairline -->
+          <div class="relative z-10 mt-3" style="height: 0.5px; background: linear-gradient(90deg, transparent, var(--hairline-bright) 30%, var(--hairline-bright) 70%, transparent);"></div>
+
+          <!-- 三联表盘 (compact) -->
+          <div class="relative z-10 mt-3">
+            <div class="flex items-baseline justify-between mb-2">
+              <div class="cn" style="font-size: 9.5px; color: var(--text-3); letter-spacing: 0.32em;">今日体感</div>
+              <div class="mono" style="font-size: 7.5px; color: var(--text-4); letter-spacing: 0.22em;">DAILY METRICS</div>
+            </div>
+            <div class="dial-triad">
+              <div class="dial-card">
+                <span class="corner-mark">01</span>
+                <svg width="58" height="58" viewBox="0 0 64 64">
+                  <circle cx="32" cy="32" r="26" fill="none" stroke="rgba(0,229,168,0.08)" stroke-width="3"/>
+                  <circle cx="32" cy="32" r="26" fill="none" stroke="#00E5A8" stroke-width="3" stroke-linecap="round" stroke-dasharray="163.36" stroke-dashoffset="29.4" transform="rotate(-90 32 32)" style="filter: drop-shadow(0 0 4px rgba(0,229,168,0.4));"/>
+                  <text x="32" y="34" font-family="JetBrains Mono" font-size="16" font-weight="600" fill="white" text-anchor="middle" dominant-baseline="middle">82</text>
+                </svg>
+                <span class="label cn">状态</span>
+              </div>
+              <div class="dial-card warn">
+                <span class="corner-mark">02</span>
+                <svg width="58" height="58" viewBox="0 0 64 64">
+                  <circle cx="32" cy="32" r="26" fill="none" stroke="rgba(229,192,123,0.08)" stroke-width="3"/>
+                  <circle cx="32" cy="32" r="26" fill="none" stroke="#E5C07B" stroke-width="3" stroke-linecap="round" stroke-dasharray="163.36" stroke-dashoffset="53" transform="rotate(-90 32 32)" style="filter: drop-shadow(0 0 4px rgba(229,192,123,0.4));"/>
+                  <text x="32" y="34" font-family="JetBrains Mono" font-size="14" font-weight="600" fill="white" text-anchor="middle" dominant-baseline="middle">14.2</text>
+                </svg>
+                <span class="label cn">负荷</span>
+              </div>
+              <div class="dial-card">
+                <span class="corner-mark">03</span>
+                <svg width="58" height="58" viewBox="0 0 64 64">
+                  <circle cx="32" cy="32" r="26" fill="none" stroke="rgba(0,229,168,0.08)" stroke-width="3"/>
+                  <circle cx="32" cy="32" r="26" fill="none" stroke="#00E5A8" stroke-width="3" stroke-linecap="round" stroke-dasharray="163.36" stroke-dashoffset="21" transform="rotate(-90 32 32)" style="filter: drop-shadow(0 0 4px rgba(0,229,168,0.4));"/>
+                  <text x="32" y="34" font-family="JetBrains Mono" font-size="13" font-weight="600" fill="white" text-anchor="middle" dominant-baseline="middle">87%</text>
+                </svg>
+                <span class="label cn">睡眠</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- AI suggestion -->
+          <div class="flex gap-1.5 mt-2 items-start relative z-10">
+            <span class="text-accent flex-shrink-0" style="font-size: 11px;">✦</span>
+            <span class="cn" style="font-size: 10.5px; color: var(--text-2); line-height: 1.55;">
+              恢复良好但<span style="color: var(--gold);">负荷偏高</span>，建议轻松跑。
+            </span>
+          </div>
+
+          <!-- ★★★ NEW: Weekly Rhythm card ★★★ -->
+          <div class="rhythm-card mini-rhythm relative z-10 mt-3">
+            <div class="rhythm-header">
+              <span class="cn">本周节奏</span>
+              <span class="mono">RHYTHM</span>
+            </div>
+            <div class="rhythm-bars" style="height: 56px;">
+              <svg viewBox="0 0 280 76" preserveAspectRatio="xMidYMid meet">
+                <line x1="0" y1="64" x2="280" y2="64" stroke="rgba(255,255,255,0.06)" stroke-width="0.5"/>
+                <rect x="6"   y="22" width="28" height="42" rx="2" fill="rgba(0,229,168,0.55)"/>
+                <rect x="46"  y="13" width="28" height="51" rx="2" fill="rgba(0,229,168,0.65)"/>
+                <rect x="86"  y="58" width="28" height="6"  rx="2" fill="rgba(255,255,255,0.08)"/>
+                <rect x="126" y="30" width="28" height="34" rx="2" fill="rgba(0,229,168,0.5)"/>
+                <rect x="166" y="22" width="28" height="42" rx="2" fill="rgba(0,229,168,0.55)"/>
+                <rect x="206" y="58" width="28" height="6"  rx="2" fill="rgba(255,255,255,0.08)"/>
+                <rect x="246" y="14" width="28" height="50" rx="2" fill="#29F0BD" filter="drop-shadow(0 0 4px rgba(41,240,189,0.6))"/>
+                <circle cx="260" cy="10" r="2.5" fill="#29F0BD" style="filter: drop-shadow(0 0 5px rgba(41,240,189,0.9));">
+                  <animate attributeName="r" values="2.5;3.5;2.5" dur="2.4s" repeatCount="indefinite"/>
+                </circle>
+                <text x="20"  y="74" font-family="Noto Sans SC" font-size="7" fill="#5A5E68" text-anchor="middle">一</text>
+                <text x="60"  y="74" font-family="Noto Sans SC" font-size="7" fill="#5A5E68" text-anchor="middle">二</text>
+                <text x="100" y="74" font-family="Noto Sans SC" font-size="7" fill="#3A3D44" text-anchor="middle">三</text>
+                <text x="140" y="74" font-family="Noto Sans SC" font-size="7" fill="#5A5E68" text-anchor="middle">四</text>
+                <text x="180" y="74" font-family="Noto Sans SC" font-size="7" fill="#5A5E68" text-anchor="middle">五</text>
+                <text x="220" y="74" font-family="Noto Sans SC" font-size="7" fill="#3A3D44" text-anchor="middle">六</text>
+                <text x="260" y="74" font-family="Noto Sans SC" font-size="7" fill="#29F0BD" text-anchor="middle" font-weight="600">日</text>
+              </svg>
+            </div>
+            <div class="rhythm-stats" style="margin-top: 6px;">
+              <div class="rhythm-stat-main">
+                <span class="cn rhythm-prefix">本周</span>
+                <span class="rhythm-num" style="font-size: 17px;">26.0</span>
+                <span class="rhythm-unit">km</span>
+              </div>
+              <div class="rhythm-streak good" style="font-size: 9px; padding: 2px 8px;">
+                <span>↗</span>
+                <span class="rhythm-num-sm">12</span>
+                <span class="cn">天</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- START button (compact) -->
+          <button class="start-button start-button--compact relative z-10 mt-4" style="height: 88px;">
+            <div class="scan-arc"></div>
+            <div class="gloss"></div>
+            <span class="corner tl"></span>
+            <span class="corner tr"></span>
+            <span class="corner bl"></span>
+            <span class="corner br"></span>
+            <div class="content">
+              <div class="icon-row">
+                <span class="play"></span>
+                <span class="label-cn cn">出 发</span>
+              </div>
+              <div class="label-en">LET'S GO</div>
+            </div>
+          </button>
+
+          <!-- 14 天 timeline (with traveling comet particle) -->
+          <div class="relative z-10" style="margin-top: 10px;">
+            <div class="flex justify-between items-center" style="font-size: 8px; color: var(--text-4); letter-spacing: 0.22em; margin-bottom: 4px;">
+              <span class="cn" style="letter-spacing: 0.18em;">最近 14 天</span>
+              <span class="text-accent">今天</span>
+            </div>
+            <svg width="100%" height="14" viewBox="0 0 280 14" style="overflow: visible;">
+              <defs>
+                <path id="timelineCometPath" d="M 6 7 L 274 7" fill="none"/>
+                <radialGradient id="timelineCometGlow">
+                  <stop offset="0%" stop-color="#29F0BD" stop-opacity="0.95"/>
+                  <stop offset="50%" stop-color="#29F0BD" stop-opacity="0.4"/>
+                  <stop offset="100%" stop-color="#29F0BD" stop-opacity="0"/>
+                </radialGradient>
+              </defs>
+
+              <!-- 13 history dots: increasing intensity, varying size -->
+              <circle cx="6"   cy="7" r="2"   fill="rgba(0,229,168,0.18)"/>
+              <circle cx="26"  cy="7" r="2.4" fill="rgba(0,229,168,0.25)"/>
+              <circle cx="46"  cy="7" r="2.8" fill="rgba(0,229,168,0.32)"/>
+              <circle cx="66"  cy="7" r="2.2" fill="rgba(0,229,168,0.28)"/>
+              <circle cx="86"  cy="7" r="2.6" fill="rgba(0,229,168,0.38)"/>
+              <circle cx="106" cy="7" r="3.2" fill="rgba(0,229,168,0.45)"/>
+              <circle cx="126" cy="7" r="2.8" fill="rgba(0,229,168,0.5)"/>
+              <circle cx="146" cy="7" r="2.4" fill="rgba(0,229,168,0.55)"/>
+              <circle cx="166" cy="7" r="3.4" fill="rgba(0,229,168,0.65)" filter="drop-shadow(0 0 3px rgba(0,229,168,0.4))"/>
+              <circle cx="186" cy="7" r="2.6" fill="rgba(0,229,168,0.7)"/>
+              <circle cx="206" cy="7" r="3"   fill="rgba(0,229,168,0.75)" filter="drop-shadow(0 0 3px rgba(0,229,168,0.4))"/>
+              <circle cx="226" cy="7" r="2.4" fill="rgba(0,229,168,0.8)"/>
+              <circle cx="246" cy="7" r="2.8" fill="rgba(0,229,168,0.85)" filter="drop-shadow(0 0 3px rgba(0,229,168,0.5))"/>
+
+              <!-- Today: hollow ring with accent stroke -->
+              <circle cx="274" cy="7" r="5.5" fill="none" stroke="#29F0BD" stroke-width="1.5" filter="drop-shadow(0 0 5px rgba(41,240,189,0.6))"/>
+
+              <!-- Traveling comet (5s loop, glow halo + bright head) -->
+              <circle r="6" fill="url(#timelineCometGlow)">
+                <animateMotion dur="5s" repeatCount="indefinite" begin="0s">
+                  <mpath href="#timelineCometPath"/>
+                </animateMotion>
+              </circle>
+              <circle r="2" fill="#29F0BD">
+                <animateMotion dur="5s" repeatCount="indefinite" begin="0s">
+                  <mpath href="#timelineCometPath"/>
+                </animateMotion>
+              </circle>
+              <!-- Trailing particle for comet tail effect -->
+              <circle r="1.4" fill="#00E5A8" opacity="0.6">
+                <animateMotion dur="5s" repeatCount="indefinite" begin="-0.18s">
+                  <mpath href="#timelineCometPath"/>
+                </animateMotion>
+              </circle>
+              <circle r="1.0" fill="#00B488" opacity="0.4">
+                <animateMotion dur="5s" repeatCount="indefinite" begin="-0.36s">
+                  <mpath href="#timelineCometPath"/>
+                </animateMotion>
+              </circle>
+            </svg>
+          </div>
+
+          <div class="home-indicator" style="margin-top: 10px;"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Notes -->
+  <div class="rhythm-notes">
+    <div class="note">
+      <span class="note-num">A</span>
+      <div class="note-body">
+        <div class="note-h cn">正常本周</div>
+        <div class="note-d cn">5 跑 + 2 休，柱高有变化（5km / 6.2km / 4km）。今天那根冷绿发光 + 顶部光点 2.4s 脉动。</div>
+      </div>
+    </div>
+    <div class="note">
+      <span class="note-num">B</span>
+      <div class="note-body">
+        <div class="note-h cn">天天画圆</div>
+        <div class="note-d cn">即使每天 5km 同路线，柱高仍微差（5.0/5.2/5.5/5.3...）—— 距离/配速本身就在变。今天的发光让"今天"还是焦点。</div>
+      </div>
+    </div>
+    <div class="note">
+      <span class="note-num warn">C</span>
+      <div class="note-body">
+        <div class="note-h cn">streak 中间断了</div>
+        <div class="note-d cn">休息柱变金色（不再是中性灰），chip 变金色显示「最长 12 天 · 本周 5 跑」—— 庆祝过去成就 + 转移到周计数，不打脸。</div>
+      </div>
+    </div>
+    <div class="note">
+      <span class="note-num muted">D</span>
+      <div class="note-body">
+        <div class="note-h cn">长期不连续</div>
+        <div class="note-d cn">streak 概念彻底淡出，chip 变中性灰显示「本月 18 跑」—— 永远有正向数字可看，不让用户觉得自己失败了。</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Old "30-day trail" proposal hidden (replaced by Weekly Rhythm above) -->
+  <div style="display: none !important; visibility: hidden;">
+    <div class="trail-card-header">
+      <span class="cn">最近 30 天足迹</span>
+      <span class="mono">RECENT · 30 DAYS</span>
+    </div>
+
+    <div class="trail-svg-frame">
+      <svg width="100%" height="100%" viewBox="0 0 320 100" preserveAspectRatio="xMidYMid slice">
+        <defs>
+          <pattern id="trailDots" width="20" height="20" patternUnits="userSpaceOnUse">
+            <circle cx="10" cy="10" r="0.4" fill="rgba(255,255,255,0.05)"/>
+          </pattern>
+          <linearGradient id="todayGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" stop-color="#00E5A8" stop-opacity="0.5"/>
+            <stop offset="80%" stop-color="#29F0BD" stop-opacity="1"/>
+            <stop offset="100%" stop-color="#29F0BD" stop-opacity="1"/>
+          </linearGradient>
+        </defs>
+
+        <rect width="320" height="100" fill="url(#trailDots)"/>
+        <line x1="0" y1="50" x2="320" y2="50" stroke="rgba(255,255,255,0.025)" stroke-dasharray="3 5"/>
+
+        <!-- 8 historical routes layered, oldest faintest -->
+        <!-- 30 days ago -->
+        <path d="M 30 75 C 60 70, 100 80, 140 65 S 200 50, 240 55 S 290 70, 300 65"
+              fill="none" stroke="#00E5A8" stroke-opacity="0.10" stroke-width="0.8"/>
+        <!-- 24 days -->
+        <path d="M 20 35 C 50 30, 80 45, 110 40 S 160 25, 200 30 S 240 50, 270 40"
+              fill="none" stroke="#00E5A8" stroke-opacity="0.13" stroke-width="0.9"/>
+        <!-- 18 days -->
+        <path d="M 40 60 C 90 65, 130 35, 170 45 S 220 65, 260 50 S 290 35, 305 45"
+              fill="none" stroke="#00E5A8" stroke-opacity="0.20" stroke-width="1"/>
+        <!-- 12 days -->
+        <path d="M 25 55 C 60 45, 100 70, 145 55 S 195 35, 235 45 S 280 60, 295 55"
+              fill="none" stroke="#00E5A8" stroke-opacity="0.28" stroke-width="1.1"/>
+        <!-- 8 days -->
+        <path d="M 35 25 C 70 35, 105 50, 140 30 S 190 22, 230 25 S 275 40, 290 30"
+              fill="none" stroke="#00E5A8" stroke-opacity="0.36" stroke-width="1.1"/>
+        <!-- 5 days -->
+        <path d="M 20 80 C 50 75, 80 50, 120 60 S 170 80, 210 65 S 260 45, 295 55"
+              fill="none" stroke="#00E5A8" stroke-opacity="0.50" stroke-width="1.2"/>
+        <!-- 3 days -->
+        <path d="M 30 40 C 65 30, 105 60, 145 45 S 195 30, 235 35 S 275 55, 305 45"
+              fill="none" stroke="#00E5A8" stroke-opacity="0.65" stroke-width="1.3"/>
+        <!-- Yesterday -->
+        <path d="M 30 60 C 70 65, 110 35, 155 45 S 200 65, 240 50 S 280 35, 300 45"
+              fill="none" stroke="#00E5A8" stroke-opacity="0.85" stroke-width="1.5"/>
+
+        <!-- Today's route — brightest with glow -->
+        <path d="M 25 50 C 70 45, 115 25, 160 35 S 215 60, 260 45 S 295 25, 305 35"
+              fill="none" stroke="url(#todayGrad)" stroke-width="2"
+              stroke-linecap="round"
+              filter="drop-shadow(0 0 6px rgba(41,240,189,0.7))"/>
+
+        <!-- Today's start marker -->
+        <circle cx="25" cy="50" r="3" fill="none" stroke="#00E5A8" stroke-width="1"/>
+        <circle cx="25" cy="50" r="1.2" fill="#00E5A8"/>
+
+        <!-- Today's end pulsing marker -->
+        <circle cx="305" cy="35" r="9" fill="none" stroke="#29F0BD" stroke-opacity="0.35" stroke-width="0.5">
+          <animate attributeName="r" values="9;13;9" dur="2.4s" repeatCount="indefinite"/>
+          <animate attributeName="stroke-opacity" values="0.35;0;0.35" dur="2.4s" repeatCount="indefinite"/>
+        </circle>
+        <circle cx="305" cy="35" r="3.5" fill="#29F0BD"
+                style="filter: drop-shadow(0 0 6px rgba(41,240,189,0.9));">
+          <animate attributeName="r" values="3.5;4.2;3.5" dur="2.4s" repeatCount="indefinite"/>
+        </circle>
+
+        <!-- "今天" label -->
+        <text x="297" y="22" font-family="JetBrains Mono" font-size="7" fill="#29F0BD" text-anchor="end" letter-spacing="1">
+          TODAY · 今天
+        </text>
+      </svg>
+    </div>
+
+    <div class="trail-card-footer">
+      <div class="trail-stat">
+        <span class="trail-stat-num">38.4</span>
+        <span class="trail-stat-unit">km</span>
+      </div>
+      <span class="trail-dot">·</span>
+      <div class="trail-stat">
+        <span class="trail-stat-num">12</span>
+        <span class="trail-stat-unit cn">次跑步</span>
+      </div>
+      <span class="trail-dot">·</span>
+      <div class="trail-stat">
+        <span class="cn trail-stat-prefix">均速</span>
+        <span class="trail-stat-num">5'18"</span>
+        <span class="trail-stat-unit">/km</span>
+      </div>
+      <div style="flex: 1;"></div>
+      <div class="trail-streak">
+        <span class="cn trail-stat-prefix">连续</span>
+        <span class="trail-stat-num" style="color: var(--accent);">12</span>
+        <span class="cn trail-stat-unit">天</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Old concept-notes (route web proposal) removed; rhythm-notes above is the v2 -->
+</div>
+
+
 <!-- =================== VERSION TAG =================== -->
 <div class="version-tag">
   <span class="pulse"></span>
-  <span><span class="green">v0.5</span> · 16 SCREENS</span>
+  <span><span class="green">v0.8</span> · 14-DAY TIMELINE COMET</span>
 </div>
 
 <!-- =================== JS =================== -->
