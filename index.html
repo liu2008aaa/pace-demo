@@ -653,35 +653,30 @@
     border-radius: 50%;
     background: rgba(0, 229, 168, var(--a, 0));
     box-shadow: 0 0 0 0.5px rgba(255,255,255,0.04) inset;
-    /* "时间流光点" play head 动画 —
-       每个 cell 各自 8s 周期, 按 --idx (JS 注入) 错开 delay
-       0.095s/cell × 84 cell = 8s, 形成"光点沿时间轴流动"视觉 */
-    animation: dotmap-playhead 8s linear infinite;
-    animation-delay: calc(var(--idx, 0) * 0.095s);
-  }
-  /* peak 在 1% (~80ms 闪亮) + 3-8% 衰减 (~ 240ms 余光) → 看起来像彗星尾 */
-  @keyframes dotmap-playhead {
-    0%   { transform: scale(1);    filter: brightness(1);   }
-    1%   { transform: scale(1.30); filter: brightness(2.5); }
-    3%   { transform: scale(1.15); filter: brightness(1.6); }
-    6%   { transform: scale(1.05); filter: brightness(1.2); }
-    10%  { transform: scale(1);    filter: brightness(1);   }
-    100% { transform: scale(1);    filter: brightness(1);   }
   }
   .dotmap-cell.empty {
     background: rgba(255,255,255,0.025);
     box-shadow: none;
   }
-  /* empty cell 经过 play head 时也轻微亮起 — 表明"那天没跑但时间轴在走" */
-  .dotmap-cell.empty {
-    animation: dotmap-playhead-empty 8s linear infinite;
-    animation-delay: calc(var(--idx, 0) * 0.095s);
+
+  /* "亮点自呼吸" — 仅高活动 dots (alpha > 0.5) 各自缓慢呼吸,
+     JS 注入 --delay 让每个错开相位, 整体像群星各自闪烁,
+     不是同步的 generic loading */
+  .dotmap-cell.breathe {
+    animation: dot-breathe 4s ease-in-out infinite;
+    animation-delay: var(--delay, 0s);
   }
-  @keyframes dotmap-playhead-empty {
-    0%   { background: rgba(255,255,255,0.025); }
-    1%   { background: rgba(0, 229, 168, 0.18); }
-    6%   { background: rgba(255,255,255,0.025); }
-    100% { background: rgba(255,255,255,0.025); }
+  @keyframes dot-breathe {
+    0%, 100% {
+      opacity: 1;
+      transform: scale(1);
+      filter: drop-shadow(0 0 3px rgba(0, 229, 168, 0.4));
+    }
+    50% {
+      opacity: 1;
+      transform: scale(1.12);
+      filter: drop-shadow(0 0 8px rgba(0, 229, 168, 0.85));
+    }
   }
 
   /* ============== CALENDAR HEATMAP (Monthly) ============== */
@@ -5249,10 +5244,16 @@
     intensities[intensities.length - 4] = 0.85;
     intensities.forEach((a, idx) => {
       const cell = document.createElement('div');
-      cell.className = a === 0 ? 'dotmap-cell empty' : 'dotmap-cell';
+      let cls = a === 0 ? 'dotmap-cell empty' : 'dotmap-cell';
+      // 高活动 dots (alpha > 0.5) 加 .breathe class, 各自错开相位
+      if (a > 0.5) {
+        cls += ' breathe';
+        // -4s ~ 0s 之间随机, 让每个 cell 错峰呼吸 (不同步)
+        const delay = -(Math.random() * 4).toFixed(2);
+        cell.style.setProperty('--delay', delay + 's');
+      }
+      cell.className = cls;
       cell.style.setProperty('--a', a);
-      // --idx 用于 CSS playhead 动画的 animation-delay (按时间轴顺序错开)
-      cell.style.setProperty('--idx', idx);
       if (idx === intensities.length - 1) {
         cell.style.boxShadow = '0 0 0 1.5px #00E5A8, 0 0 8px rgba(0,229,168,0.6)';
       }
